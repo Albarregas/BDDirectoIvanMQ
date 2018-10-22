@@ -38,6 +38,17 @@ public class Controlador extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    protected ArrayList<Aves> buscarUno(Connection conex,int numero)throws SQLException{
+        Statement s = conex.createStatement();
+        Aves ave = null;
+        ArrayList<Aves> aves=new ArrayList<Aves>();
+        ResultSet rs = s.executeQuery("select * from aves where anillo="+numero);
+        while (rs.next()) {
+            ave = new Aves(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4));
+            aves.add(ave);
+        }
+        return aves;
+    }
     protected ArrayList<Aves> mostrarTodos(Connection conex) throws SQLException {
         Statement s = conex.createStatement();
         Aves ave = null;
@@ -48,7 +59,19 @@ public class Controlador extends HttpServlet {
             aves.add(ave);
         }
         return aves;
-
+    }
+    protected ArrayList<Aves> mostrarAlgunos(Connection conex,int numero)throws SQLException{
+        Statement s = conex.createStatement();
+        Aves ave = null;
+        ArrayList<Aves> aves=new ArrayList<Aves>();
+        ResultSet rs = s.executeQuery("select * from aves");
+        int i=0;
+        while (rs.next() && numero>=i) {
+            ave = new Aves(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4));
+            aves.add(ave);
+            i++;
+        }
+        return aves;
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -60,9 +83,16 @@ public class Controlador extends HttpServlet {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String sURL = "jdbc:mysql://localhost:3306/" + DB;
             conn = DriverManager.getConnection(sURL, user, pass);
-            request.setAttribute("mostrarTodo", mostrarTodos(conn));
+            if(request.getParameter("Aceptar").equals("Buscar Uno")){
+                request.setAttribute("mostrar", buscarUno(conn,request.getAttribute("Anillo")));
+            }else if(request.getParameter("Aceptar").equals("Mostrar Todos")){
+                request.setAttribute("mostrar", mostrarTodos(conn));
+            }else if(request.getParameter("Aceptar").equals("Mostrar Algunos")){
+                request.setAttribute("mostrar", mostrarAlgunos(conn,request.getAttribute("NumeroAves")));
+            }
             url="JSP/resultado.jsp";
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             request.setAttribute("error", ex);
             url = "JSP/error.jsp";
         } catch (InstantiationException ex) {
@@ -109,7 +139,8 @@ public class Controlador extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //request.setAttribute("anillo", request.getParameter("Anillo"));
+        request.setAttribute("Anillo", request.getParameter("Anillo"));
+        request.setAttribute("NumeroAves", request.getParameter("Algunos"));
         processRequest(request, response);
 
     }

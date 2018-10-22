@@ -14,10 +14,12 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>resultado<% ArrayList<Aves> aves=(ArrayList<Aves>)request.getAttribute("mostrarTodo");
+        <h1>resultado<% ArrayList<Aves> aves=(ArrayList<Aves>)request.getAttribute("mostrar");
             for (Aves ave : aves) {
                     ave.getAnillas();
                     ave.getEspecie();
+                    ave.getLugar();
+                    ave.getFecha();
                 }
             %></h1>
     </body>

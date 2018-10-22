@@ -13,8 +13,11 @@
     </head>
     <body>
         <form method="post" action="Controlador">
-            <input type="text" name="Anillo">Introduzca el anillo que quiere buscar.
-            <input type="submit" name="Aceptar">
+            <input type="number" name="Anillo" id="Anillo">Introduzca el anillo que quiere buscar.
+            <input type="submit" name="Aceptar" value="Buscar Uno"><br><br>
+            Pulse aqui para mostrar todas las aves. <input type="submit" name="Aceptar" value="Mostrar Todos"><br><br>
+            <input type="number" name="Algunos" value="Algunos">Seleccione cuantas aves quiere mostrar. 
+            <input type="submit" name="Aceptar" value="Mostrar Algunos">
         </form>
     </body>
 </html>
